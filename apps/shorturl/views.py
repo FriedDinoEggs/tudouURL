@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from .models import ShortUrls
@@ -34,6 +35,8 @@ class ShortUrlsViewSet(
 
 
 class RedirectView(APIView):
+    throttle_classes = [AnonRateThrottle]
+
     def get(self, request, short_code=None):
         try:
             original_id = ShortUrlGenerater.decode(short_code)
