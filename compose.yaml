@@ -1,0 +1,30 @@
+services:
+
+  postgres:
+    image: postgres:18
+    container_name: tudou_url_postgresql
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${USER_NAME:?error}
+      POSTGRES_PASSWORD: ${PASSWORD:?error}
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ./db_data:/var/lib/postgresql/data:Z
+    ports:
+        - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: tudou_url_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PWD:?eroor}
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_CONFIG_SESSION_EXPIRATION_TIME: 86400 # 設定為一天 (秒)
+      PGADMIN_CONFIG_MAX_SESSION_IDLE_TIME: 7200    # 閒置一小時才登出
+    ports:
+      - "8888:80"
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin:Z

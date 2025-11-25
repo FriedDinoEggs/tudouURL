@@ -1,0 +1,45 @@
+[project]
+name = "tudouURL"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django-stubs>=5.2.7",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-simplejwt>=5.5.1",
+    "psycopg[binary]>=3.2.12",
+    "python-dotenv>=1.2.1",
+]
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+
+[tool.ruff]
+line-length = 100
+exclude = [
+  "tests/*", 
+  "docs/*",
+  ".venv/*",
+  "settings.py",
+  "migrations",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",  # Pycodestyle 錯誤類型
+  "F",  # Pyflakes 的程序檢查
+  "W",  # 警告
+  "C",  # 複雜度與風格
+  "Q",  # 雜七雜八的錯誤檢查
+  "B",  # Bug 總類檢查 (bandit-like)
+  #  "I",  # import 排序檢查 (isort 兼容)
+]
+ignore = [
+  "E203",  # 與 black 格式化衝突
+]
+
+extend-ignore = []
+
+[tool.ruff.format]
+quote-style = "single"
