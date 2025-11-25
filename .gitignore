@@ -2,4 +2,6 @@
 .env
 db_data
 pgadmin-data
+__pycache__/
+*.pyc
 
