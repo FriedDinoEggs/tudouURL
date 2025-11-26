@@ -1,10 +1,11 @@
+from django.db.models import F
 from django.shortcuts import redirect
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
-from .models import ShortUrls
+from .models import AccessLog, ShortUrls
 from .serializers import ShortUrlsSerializer
 from .services import ShortUrlGenerater
 
@@ -35,15 +36,29 @@ class ShortUrlsViewSet(
 
 
 class RedirectView(APIView):
-    throttle_classes = [AnonRateThrottle]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get(self, request, short_code=None):
         try:
             original_id = ShortUrlGenerater.decode(short_code)
             short_url_instance = ShortUrls.objects.get(pk=original_id, is_active=True)
-            short_url_instance.clicks_count += 1
+            short_url_instance.clicks_count = F('clicks_count') + 1
             short_url_instance.save(update_fields=['clicks_count'])
+
+            self._set_log(request, instance=short_url_instance)
 
             return redirect(short_url_instance.original_url)
         except (ValueError, ShortUrls.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def _set_log(self, request, instance):
+        log_ip_address = request.META.get('REMOTE_ADDR')
+        log_user_agent = request.META.get('HTTP_USER_AGENT')
+        log_referer = request.META.get('HTTP_REFERER')
+
+        access_log_instance = AccessLog.objects.create(
+            short_url_id=instance,
+            ip_address=log_ip_address,
+            user_agent=log_user_agent,
+            referer=log_referer,
+        )
