@@ -2,10 +2,24 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import ShortUrls
+from .models import AccessLog, ShortUrls
 from .serializers import ShortUrlGenerater
 
+
 # Register your models here.
+class AccessLogInline(admin.TabularInline):
+    model = AccessLog
+
+    # 預設不新增額外的空白表單
+    extra = 0
+
+    # 不能刪除
+    can_delete = False
+
+    max_num = 0
+
+    # fields = ['short_url_id', 'accessed_at', 'ip_address', 'user_agent', 'referer']
+    readonly_fields = ['short_url_id', 'accessed_at', 'ip_address', 'user_agent', 'referer']
 
 
 @admin.register(ShortUrls)
@@ -41,6 +55,10 @@ class ShortUrlsAdmin(admin.ModelAdmin):
     def display_short_url(self, obj):
         return f'{settings.SITE_URL}/{ShortUrlGenerater.encode(obj.id)}'
 
+    inlines = [
+        AccessLogInline,
+    ]
+
     list_filter = ['is_deleted', 'is_active']
     list_per_page = 25
     search_fields = ('original_url',)
@@ -55,3 +73,9 @@ class ShortUrlsAdmin(admin.ModelAdmin):
             {'fields': ['original_url', 'expires_at', 'is_active']},
         ),
     ]
+
+
+@admin.register(AccessLog)
+class AccessLogAdmin(admin.ModelAdmin):
+    list_display = ['short_url_id', 'accessed_at', 'ip_address', 'user_agent', 'referer']
+    ordering = ('id',)

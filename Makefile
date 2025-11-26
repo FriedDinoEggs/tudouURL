@@ -3,3 +3,6 @@ mmigrations:
 
 migrate:
 	uv run manage.py migrate
+
+run_testserver:
+	uv run manage.py runserver
