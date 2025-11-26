@@ -53,7 +53,7 @@ class RedirectView(APIView):
 
     def _set_log(self, request, instance):
         log_ip_address = request.META.get('REMOTE_ADDR')
-        log_user_agent = request.META.get('HTTP_USER_AGENT')
+        log_user_agent = request.META.get('HTTP_USER_AGENT', '')
         log_referer = request.META.get('HTTP_REFERER')
 
         access_log_instance = AccessLog.objects.create(
