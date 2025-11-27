@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
-from .models import AccessLog, ShortUrls
+from .models import ShortUrls
 from .serializers import ShortUrlsSerializer
 from .services import ShortUrlGenerater
-from .task import add
+from .tasks import store_log
 
 # Create your views here.
 
@@ -50,7 +50,6 @@ class RedirectView(APIView):
         request=None,
     )
     def get(self, request, short_code=None):
-        result = add.delay(4, 4)
         try:
             original_id = ShortUrlGenerater.decode(short_code)
             short_url_instance = ShortUrls.objects.get(pk=original_id, is_active=True)
@@ -67,8 +66,8 @@ class RedirectView(APIView):
         log_user_agent = request.META.get('HTTP_USER_AGENT', '')
         log_referer = request.META.get('HTTP_REFERER')
 
-        access_log_instance = AccessLog.objects.create(
-            short_url_id=instance,
+        store_log.delay_on_commit(
+            instance.id,
             ip_address=log_ip_address,
             user_agent=log_user_agent,
             referer=log_referer,
