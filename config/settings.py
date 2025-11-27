@@ -20,9 +20,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-APPS_DIR = BASE_DIR/'apps'
+APPS_DIR = BASE_DIR / 'apps'
 sys.path.insert(0, str(APPS_DIR))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
     'rest_framework',
     'shorturl',
     'drf_spectacular',
@@ -163,5 +164,23 @@ CACHES = {
     },
 }
 
-
 SITE_URL = os.environ.get('SITE_URL', 'http://localhost:8000')
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'tudou URL API',
+    'DESCRIPTION': 'A lightweight URL shortening API built with Django REST Framework for learning purposes.',
+    'VERSION': '0.1.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+
+
+# Celery Configuration Options
+CELERY_TIMEZONE = 'Asia/Taipei'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# --- Celery Broker and Result Backend Settings ---
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = 'django-db' # 使用 django-celery-results 將結果存入資料庫
+CELERY_CACHE_BACKEND = 'django-cache'

@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
-from .models import AccessLog, ShortUrls
+from .models import ShortUrls
 from .serializers import ShortUrlsSerializer
 from .services import ShortUrlGenerater
+from .tasks import store_log
 
 # Create your views here.
 
@@ -56,7 +57,6 @@ class RedirectView(APIView):
             short_url_instance.save(update_fields=['clicks_count'])
 
             self._set_log(request, instance=short_url_instance)
-
             return redirect(short_url_instance.original_url)
         except (ValueError, ShortUrls.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -66,8 +66,8 @@ class RedirectView(APIView):
         log_user_agent = request.META.get('HTTP_USER_AGENT', '')
         log_referer = request.META.get('HTTP_REFERER')
 
-        access_log_instance = AccessLog.objects.create(
-            short_url_id=instance,
+        store_log.delay(
+            short_url_id=instance.id,
             ip_address=log_ip_address,
             user_agent=log_user_agent,
             referer=log_referer,
