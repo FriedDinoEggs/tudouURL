@@ -66,8 +66,8 @@ class RedirectView(APIView):
         log_user_agent = request.META.get('HTTP_USER_AGENT', '')
         log_referer = request.META.get('HTTP_REFERER')
 
-        store_log.delay_on_commit(
-            instance.id,
+        store_log.delay(
+            short_url_id=instance.id,
             ip_address=log_ip_address,
             user_agent=log_user_agent,
             referer=log_referer,
