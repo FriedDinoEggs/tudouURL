@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from .models import AccessLog, ShortUrls
 from .serializers import ShortUrlsSerializer
 from .services import ShortUrlGenerater
+from .task import add
 
 # Create your views here.
 
@@ -49,6 +50,7 @@ class RedirectView(APIView):
         request=None,
     )
     def get(self, request, short_code=None):
+        result = add.delay(4, 4)
         try:
             original_id = ShortUrlGenerater.decode(short_code)
             short_url_instance = ShortUrls.objects.get(pk=original_id, is_active=True)
@@ -56,7 +58,6 @@ class RedirectView(APIView):
             short_url_instance.save(update_fields=['clicks_count'])
 
             self._set_log(request, instance=short_url_instance)
-
             return redirect(short_url_instance.original_url)
         except (ValueError, ShortUrls.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
