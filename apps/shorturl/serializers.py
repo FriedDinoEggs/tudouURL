@@ -8,7 +8,7 @@ from .services import ShortUrlGenerater
 class ShortUrlsSerializer(serializers.ModelSerializer):
     short_url = serializers.SerializerMethodField()
 
-    def get_short_url(self, obj):
+    def get_short_url(self, obj) -> None | str:
         if not obj.id:
             return None
 
