@@ -1,5 +1,6 @@
 from django.db.models import F
 from django.shortcuts import redirect
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
@@ -38,6 +39,15 @@ class ShortUrlsViewSet(
 class RedirectView(APIView):
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
+    @extend_schema(
+        summary='Redirect Short URL',
+        description='Redirects to the original URL based on the short code.',
+        responses={
+            302: OpenApiResponse(description='Redirect to target URL'),
+            404: OpenApiResponse(description='Not found'),
+        },
+        request=None,
+    )
     def get(self, request, short_code=None):
         try:
             original_id = ShortUrlGenerater.decode(short_code)

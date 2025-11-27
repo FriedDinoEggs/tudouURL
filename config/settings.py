@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'shorturl',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -150,7 +151,10 @@ REST_FRAMEWORK = {
         'user': '12/minute'
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 3,
+
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 CACHES = {
