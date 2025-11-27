@@ -13,7 +13,7 @@ dependencies = [
     "drf-spectacular>=0.29.0",
     "psycopg[binary]>=3.2.12",
     "python-dotenv>=1.2.1",
-    "redis-cli>=1.0.1",
+    "redis>=7.1.0",
 ]
 
 [tool.basedpyright]

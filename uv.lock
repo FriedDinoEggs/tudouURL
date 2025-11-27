@@ -387,18 +387,6 @@ wheels = [
 ]
 
 [[package]]
-name = "redis-cli"
-version = "1.0.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "redis" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/85/7a/464077bce2a14cd8399776ae0c694e7c240b58ffe4b231413013f2fb48fe/redis-cli-1.0.1.tar.gz", hash = "sha256:6be46d8e6ae638fec27cb425d499b7f25b1592402c74d5d17f5b85b5e7f988a0", size = 5958, upload-time = "2023-10-02T05:58:36.407Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/29/33cbdafefd22613cc003f837b6f0295462b2e91696180f06c5210f576a1b/redis_cli-1.0.1-py3-none-any.whl", hash = "sha256:e9f6af4a8b7591d8bfd1e23be89bdd9666ce824df881748fb02b88dd30575dc8", size = 5851, upload-time = "2023-10-02T05:58:32.924Z" },
-]
-
-[[package]]
 name = "referencing"
 version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
@@ -479,7 +467,7 @@ dependencies = [
     { name = "drf-spectacular" },
     { name = "psycopg", extra = ["binary"] },
     { name = "python-dotenv" },
-    { name = "redis-cli" },
+    { name = "redis" },
 ]
 
 [package.metadata]
@@ -492,7 +480,7 @@ requires-dist = [
     { name = "drf-spectacular", specifier = ">=0.29.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.12" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
-    { name = "redis-cli", specifier = ">=1.0.1" },
+    { name = "redis", specifier = ">=7.1.0" },
 ]
 
 [[package]]
