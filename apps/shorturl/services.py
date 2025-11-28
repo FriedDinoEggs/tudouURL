@@ -1,4 +1,4 @@
-class ShortUrlGenerater:
+class ShortUrlService:
     CHAR_SET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     BASE = len(CHAR_SET)
 
