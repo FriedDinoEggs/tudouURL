@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import AccessLog, ShortUrls
-from .serializers import ShortUrlGenerater
+from .serializers import ShortUrlService
 
 
 # Register your models here.
@@ -53,7 +53,7 @@ class ShortUrlsAdmin(admin.ModelAdmin):
 
     @admin.display(description='short URL!!!')
     def display_short_url(self, obj):
-        return f'{settings.SITE_URL}/{ShortUrlGenerater.encode(obj.id)}'
+        return f'{settings.SITE_URL}/{ShortUrlService.encode(obj.id)}'
 
     inlines = [
         AccessLogInline,

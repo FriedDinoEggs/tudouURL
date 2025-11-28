@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from .models import AccessLog, ShortUrls
-from .services import ShortUrlGenerater
+from .services import ShortUrlService
 
 
 class ShortUrlsSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class ShortUrlsSerializer(serializers.ModelSerializer):
         if not request:
             return None
 
-        short_code = ShortUrlGenerater.encode(obj.id)
+        short_code = ShortUrlService.encode(obj.id)
         relative_url = reverse('redirect', kwargs={'short_code': short_code})
         return request.build_absolute_uri(relative_url)
 

@@ -6,10 +6,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from .models import ShortUrls
-from .services import ShortUrlGenerater
+from .services import ShortUrlService
 
 
-class ShortUrlGeneraterTests(APITestCase):
+class ShortUrlServiceTests(APITestCase):
     """
     1. 測試服務層 (Service Layer)
     測試核心的編碼/解碼邏輯
@@ -22,8 +22,8 @@ class ShortUrlGeneraterTests(APITestCase):
         for original_id in test_ids:
             # 使用 with self.subTest(...) 可以在一個測試方法中執行多個子測試
             with self.subTest(original_id=original_id):
-                short_code = ShortUrlGenerater.encode(original_id)
-                decoded_id = ShortUrlGenerater.decode(short_code)
+                short_code = ShortUrlService.encode(original_id)
+                decoded_id = ShortUrlService.decode(short_code)
                 self.assertEqual(original_id, decoded_id)
 
     def test_decode_invalid_character(self):
@@ -31,7 +31,7 @@ class ShortUrlGeneraterTests(APITestCase):
         # CHAR_SET 中不包含 '#' 和 '!'
         invalid_code = 'a#b!'
         with self.assertRaises(ValueError):
-            ShortUrlGenerater.decode(invalid_code)
+            ShortUrlService.decode(invalid_code)
 
 
 class ShortUrlsAPITests(APITestCase):
@@ -57,7 +57,7 @@ class ShortUrlsAPITests(APITestCase):
 
         # 驗證回傳的 short_url 是否為完整的絕對 URL
         new_id = response.data['id']
-        expected_short_code = ShortUrlGenerater.encode(new_id)
+        expected_short_code = ShortUrlService.encode(new_id)
         self.assertIn(expected_short_code, response.data['short_url'])
         self.assertTrue(response.data['short_url'].startswith('http://'))
 
@@ -105,7 +105,7 @@ class RedirectViewTests(APITestCase):
     def setUp(self):
         self.google_url = 'https://www.google.com'
         self.short_url_instance = ShortUrls.objects.create(original_url=self.google_url)
-        self.short_code = ShortUrlGenerater.encode(self.short_url_instance.id)
+        self.short_code = ShortUrlService.encode(self.short_url_instance.id)
 
     def test_redirect_success(self):
         """測試有效的 short_code 是否能成功重定向並增加點擊次數"""
@@ -130,7 +130,7 @@ class RedirectViewTests(APITestCase):
     def test_redirect_not_found(self):
         """測試無效的 short_code 是否回傳 404 Not Found"""
         # 產生一個資料庫中不存在的 ID 的 short_code
-        non_existent_code = ShortUrlGenerater.encode(99999)
+        non_existent_code = ShortUrlService.encode(99999)
         url = reverse('redirect', kwargs={'short_code': non_existent_code})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
