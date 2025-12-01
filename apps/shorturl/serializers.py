@@ -47,13 +47,13 @@ class ShortUrlsSerializer(serializers.ModelSerializer):
 
 
 class AccessLogSerializer(serializers.ModelSerializer):
-    class meta:
+    class Meta:
         model = AccessLog
-        fields = ['id', 'short_url_id', 'access_at', 'ip_address', 'user_agent', 'referer']
+        fields = ['id', 'short_url_id', 'accessed_at', 'ip_address', 'user_agent', 'referer']
         read_only_fields = [
             'id',
             'short_url_id',
-            'access_at',
+            'accessed_at',
             'ip_address',
             'user_agent',
             'referer',
